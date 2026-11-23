@@ -44,3 +44,23 @@ app/
   static/          # CSS
 tests/             # pytest tests
 ```
+
+## Run locally
+
+```bash
+make install
+make run   # http://localhost:8000
+```
+
+## Admin login (MBA-3914)
+
+- `/login` checks credentials against salted PBKDF2-SHA256 hashes (`app/auth.py`); no plaintext passwords are stored.
+- On success a signed session cookie is set and the user is redirected to `/admin`; `/admin` redirects to `/login` without a session. **Log out** clears the session.
+- Users are stored in SQLite; the `users` table is created on app startup. No users are seeded here (see MBA-3915). Create one with:
+  `python -c "from app.auth import create_user; create_user('admin', 'change-me')"`
+
+| Env var | Default | Purpose |
+| --- | --- | --- |
+| `ADMIN_PORTAL_DB` | `admin_portal.db` | SQLite database path |
+| `ADMIN_PORTAL_SECRET_KEY` | random per process | Session cookie signing key (set it so sessions survive restarts) |
+| `ADMIN_PORTAL_HTTPS_ONLY` | unset | Set to `1` to mark the session cookie `Secure` |
