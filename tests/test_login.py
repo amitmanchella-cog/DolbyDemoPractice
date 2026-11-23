@@ -40,6 +40,7 @@ def test_login_success_sets_session_and_redirects_to_admin(client, user):
     assert admin.status_code == 200
     assert f"Welcome, {USERNAME}" in admin.text
     assert ">Log out</button>" in admin.text
+    assert admin.headers["cache-control"] == "no-store"
 
 
 @pytest.mark.parametrize(

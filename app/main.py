@@ -99,7 +99,9 @@ def admin(request: Request) -> HTMLResponse | RedirectResponse:
     if user is None:
         request.session.clear()
         return redirect("/login")
-    return render(request, "admin.html", username=user.username)
+    response = render(request, "admin.html", username=user.username)
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.get("/healthz")
