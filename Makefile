@@ -1,9 +1,12 @@
-.PHONY: install run lint test
+.PHONY: install seed run lint test
 
 install:
 	python -m pip install -r requirements-dev.txt
 
-run:
+seed:
+	python -m app.seed
+
+run: seed
 	uvicorn app.main:app --reload --port 8000
 
 lint:

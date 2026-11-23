@@ -15,7 +15,28 @@ pip install -r requirements-dev.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Then open http://localhost:8000. (`make install` and `make run` do the same.)
+Then open http://localhost:8000. (`make install` and `make run` do the same;
+`make run` also seeds the demo user first.)
+
+## Demo sign-in (demo only)
+
+> **Demo only.** This is a fake sample login for local demos. It is not a real
+> account and must never be reused anywhere. Never put real credentials in this repo.
+
+| Username     | Password        |
+|--------------|-----------------|
+| `demo.admin` | `DemoPass!2026` |
+
+Seed the demo user with one command (idempotent, safe to re-run):
+
+```bash
+python -m app.seed   # or: make seed
+```
+
+Users are stored in SQLite at `$ADMIN_PORTAL_DB` (default `admin_portal.db`).
+Then start the app, open http://localhost:8000/login, sign in with the demo
+credentials and you land on `/admin` ("Welcome, demo.admin"). **Log out** returns
+to `/login`.
 
 ## Routes
 
@@ -40,6 +61,7 @@ CI runs the same checks on every pull request (`.github/workflows/ci.yml`).
 ```
 app/
   main.py          # FastAPI app and routes
+  seed.py          # Seeds the fake demo.admin user (demo only)
   templates/       # Jinja2 templates (base.html + one per page)
   static/          # CSS
 tests/             # pytest tests
@@ -56,7 +78,7 @@ make run   # http://localhost:8000
 
 - `/login` checks credentials against salted PBKDF2-SHA256 hashes (`app/auth.py`); no plaintext passwords are stored.
 - On success a signed session cookie is set and the user is redirected to `/admin`; `/admin` redirects to `/login` without a session. **Log out** clears the session.
-- Users are stored in SQLite; the `users` table is created on app startup. No users are seeded here (see MBA-3915). Create one with:
+- Users are stored in SQLite; the `users` table is created on app startup. To add the demo user run `make seed` (see "Demo sign-in" above). Create other users with:
   `python -c "from app.auth import create_user; create_user('admin', 'change-me')"`
 
 | Env var | Default | Purpose |
