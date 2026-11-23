@@ -3,7 +3,9 @@
 {% block content %}
 <section class="card">
   <h1>Admin dashboard</h1>
-  <p class="lead">This area will require sign-in.</p>
-  <a class="btn btn-secondary" href="/">Back to home</a>
+  <p class="lead" id="welcome">Welcome, {{ username }}</p>
+  <form method="post" action="/logout">
+    <button type="submit" class="btn btn-secondary" id="log-out">Log out</button>
+  </form>
 </section>
 {% endblock %}
